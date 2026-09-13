@@ -1,0 +1,19 @@
+﻿Song Retrieval System Report
+
+
+I used 560 benchmark songs to evaluate raw dot product, raw cosine similarity, and TF-IDF cosine similarity. For each query, I excluded the query song and all other songs by the same artist before selecting three recommendations. I counted a recommendation as a hit if its genre matched the query's genre and calculated mean precision@3 using hits.mean().
+
+
+Raw dot product achieved precision@3 of 0.092857, raw cosine achieved 0.191071, and TF-IDF cosine achieved 0.210119. TF-IDF cosine performed best among the baselines. These results suggest that normalizing vector length and reducing the influence of common words and repetition helped with genre matching.
+
+
+I chose to build a Binary-IDF cosine system because I noticed that a song could rank highly in the earlier dot-product results just because it repeated a shared word many times. For example, repeated occurrences of "we" accounted for almost the entire dot-product score for "We Gonna Rock." I wanted to compare songs based more on which words they use rather than how often they repeat them. Since TF-IDF cosine performed best among the baselines, I kept IDF weighting and cosine similarity but changed how word frequency was represented.
+
+
+I changed each word count to 1 if the word appears and 0 if it does not, then multiplied those values by IDF. This means repetition adds no extra weight, but words found in fewer songs still receive more weight. I used cosine similarity to normalize vector length and kept the same artist exclusions and evaluation rules as the baselines.
+
+
+My system achieved precision@3 of 0.219048, compared with 0.210119 for TF-IDF cosine, the strongest baseline. That was 368 same-genre hits instead of 353, or 15 additional hits across 1,680 recommendation slots. The improvement was small, but it suggests that removing repetition helped with genre matching on this dataset. One drawback is that repeated words might sometimes be important to a song's topic, so removing their frequency could also lose useful information.
+
+
+Binary-IDF cosine performed best in this evaluation, but it still matched the query's genre in only about 22% of recommendation slots. I would test it on other queries before assuming it consistently performs better. Matching a song's genre also does not mean a listener will like the recommendation, so audio features and listening preferences could help improve the system.
